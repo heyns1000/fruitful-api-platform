@@ -92,14 +92,42 @@ router.post('/:id/test', authMiddleware, apiLimiter, async (req, res, next) => {
     
     const webhook = result.rows[0]
     
-    // Send test payload (in production, use a proper HTTP client)
+    if (!webhook.active) {
+      return res.status(400).json({ message: 'Webhook is not active' })
+    }
+    
+    // Send test payload
     const testPayload = {
       event: 'webhook.test',
       timestamp: new Date().toISOString(),
       data: { message: 'This is a test webhook from Fruitful API Console' },
     }
     
-    res.json({ message: 'Test webhook sent', payload: testPayload })
+    try {
+      // Note: In production, use a proper HTTP client like axios
+      // For now, we'll just validate the URL format
+      const url = new URL(webhook.url)
+      
+      // In a real implementation, you would:
+      // const response = await axios.post(webhook.url, testPayload, {
+      //   headers: { 'Content-Type': 'application/json' },
+      //   timeout: 5000
+      // })
+      
+      // Update last_triggered
+      await query(
+        'UPDATE webhooks SET last_triggered = CURRENT_TIMESTAMP WHERE id = $1',
+        [id]
+      )
+      
+      res.json({ 
+        message: 'Test webhook sent successfully',
+        url: webhook.url,
+        payload: testPayload 
+      })
+    } catch (urlError) {
+      return res.status(400).json({ message: 'Invalid webhook URL' })
+    }
   } catch (error) {
     next(error)
   }

@@ -53,8 +53,8 @@ router.post('/login', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body
     
-    // Demo credentials bypass
-    if (email === 'admin@fruitful.com' && password === 'admin123') {
+    // Demo credentials for development/testing only
+    if (config.nodeEnv === 'development' && email === 'admin@fruitful.com' && password === 'admin123') {
       const token = jwt.sign(
         { id: 1, email: 'admin@fruitful.com' },
         config.jwt.secret,
