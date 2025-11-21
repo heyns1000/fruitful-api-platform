@@ -233,7 +233,7 @@ export const getPulseStats = async (pulseId) => {
 export const getPerformanceMetrics = async () => {
   try {
     const metrics = {
-      activePulses: activePulses.size,
+      activePulsesCount: activePulses.size,
       totalPulses: pulseHistory.size,
       avgBurnRate: 0,
       optimalPulses: 0,

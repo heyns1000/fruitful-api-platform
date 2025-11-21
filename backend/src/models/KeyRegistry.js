@@ -7,6 +7,11 @@
 // In-memory storage for key registry (VaultMesh compatible)
 const keyRegistry = new Map()
 
+// Valid values for key registry
+const VALID_PROVIDERS = ['openai', 'anthropic', 'claude', 'gemini', 'grok', 'copilot']
+const VALID_ENVIRONMENTS = ['dev', 'staging', 'prod']
+const VALID_SERVICES = ['pulse', 'vault', 'claim', 'mesh']
+
 /**
  * Key Registry Schema
  * Format: FAA_KEY_Ω_{PROVIDER}_{ENV}_{SERVICE}_{VERSION}
@@ -35,21 +40,18 @@ export class KeyRegistryEntry {
     }
 
     // Validate provider
-    const validProviders = ['openai', 'anthropic', 'claude', 'gemini', 'grok', 'copilot']
-    if (!validProviders.includes(this.provider)) {
-      throw new Error(`Invalid provider. Must be one of: ${validProviders.join(', ')}`)
+    if (!VALID_PROVIDERS.includes(this.provider)) {
+      throw new Error(`Invalid provider. Must be one of: ${VALID_PROVIDERS.join(', ')}`)
     }
 
     // Validate environment
-    const validEnvironments = ['dev', 'staging', 'prod']
-    if (!validEnvironments.includes(this.environment)) {
-      throw new Error(`Invalid environment. Must be one of: ${validEnvironments.join(', ')}`)
+    if (!VALID_ENVIRONMENTS.includes(this.environment)) {
+      throw new Error(`Invalid environment. Must be one of: ${VALID_ENVIRONMENTS.join(', ')}`)
     }
 
     // Validate service
-    const validServices = ['pulse', 'vault', 'claim', 'mesh']
-    if (!validServices.includes(this.service)) {
-      throw new Error(`Invalid service. Must be one of: ${validServices.join(', ')}`)
+    if (!VALID_SERVICES.includes(this.service)) {
+      throw new Error(`Invalid service. Must be one of: ${VALID_SERVICES.join(', ')}`)
     }
 
     // Validate version format (semver)

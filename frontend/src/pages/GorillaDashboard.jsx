@@ -45,12 +45,10 @@ const GorillaDashboard = () => {
       setLoading(false)
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
-      if (!loading) {
-        message.error('Failed to fetch dashboard data')
-      }
+      message.error('Failed to fetch dashboard data')
       setLoading(false)
     }
-  }, [loading])
+  }, [])
 
   useEffect(() => {
     fetchDashboardData()
