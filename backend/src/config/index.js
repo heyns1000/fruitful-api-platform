@@ -28,4 +28,9 @@ export default {
     complianceMode: process.env.FAA_X13_COMPLIANCE_MODE || 'strict',
     auditLog: process.env.FAA_X13_AUDIT_LOG === 'enabled',
   },
+  
+  ai: {
+    openaiApiKey: process.env.OPENAI_API_KEY,
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+  },
 }

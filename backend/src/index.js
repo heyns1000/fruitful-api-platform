@@ -9,6 +9,7 @@ import analyticsRoutes from './routes/analytics.js'
 import webhooksRoutes from './routes/webhooks.js'
 import billingRoutes from './routes/billing.js'
 import playgroundRoutes from './routes/playground.js'
+import aiRoutes from './routes/ai.js'
 
 const app = express()
 
@@ -56,6 +57,7 @@ app.use('/api/analytics', analyticsRoutes)
 app.use('/api/webhooks', webhooksRoutes)
 app.use('/api/billing', billingRoutes)
 app.use('/api/playground', playgroundRoutes)
+app.use('/api/ai', aiRoutes)
 
 // Error handling
 app.use(notFoundHandler)
