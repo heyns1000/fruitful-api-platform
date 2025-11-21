@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Calendar, TrendingUp, Activity } from 'lucide-react'
 import { analyticsService } from '../services/api'
@@ -8,11 +8,7 @@ function AnalyticsPage() {
   const [usageData, setUsageData] = useState([])
   const [stats, setStats] = useState(null)
 
-  useEffect(() => {
-    loadAnalytics()
-  }, [timeRange])
-
-  const loadAnalytics = async () => {
+  const loadAnalytics = useCallback(async () => {
     try {
       const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90
       const [usageRes, statsRes] = await Promise.all([
@@ -24,7 +20,11 @@ function AnalyticsPage() {
     } catch (error) {
       console.error('Failed to load analytics:', error)
     }
-  }
+  }, [timeRange])
+
+  useEffect(() => {
+    loadAnalytics()
+  }, [loadAnalytics])
 
   return (
     <div className="space-y-8">

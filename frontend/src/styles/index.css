@@ -17,7 +17,7 @@
 @layer components {
   /* VaultLevel 7 Security Indicators */
   .vault-secure {
-    @apply border-l-4 border-vault-500 bg-vault-950/20;
+    @apply border-l-4 border-vault-500 bg-slate-900;
   }
   
   /* HSOMNI9000 Card Components */

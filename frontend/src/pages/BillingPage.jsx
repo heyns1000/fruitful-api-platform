@@ -1,28 +1,6 @@
-import { useState, useEffect } from 'react'
 import { CreditCard, Download, CheckCircle } from 'lucide-react'
-import { billingService } from '../services/api'
 
 function BillingPage() {
-  const [subscription, setSubscription] = useState(null)
-  const [invoices, setInvoices] = useState([])
-
-  useEffect(() => {
-    loadBillingData()
-  }, [])
-
-  const loadBillingData = async () => {
-    try {
-      const [subRes, invRes] = await Promise.all([
-        billingService.getSubscription(),
-        billingService.getInvoices(),
-      ])
-      setSubscription(subRes.data)
-      setInvoices(invRes.data)
-    } catch (error) {
-      console.error('Failed to load billing data:', error)
-    }
-  }
-
   return (
     <div className="space-y-8">
       {/* Header */}
