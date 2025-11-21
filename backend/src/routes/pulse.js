@@ -6,7 +6,7 @@
 
 import express from 'express'
 import { apiKeyMiddleware } from '../middleware/auth.js'
-import { strictLimiter } from '../middleware/rateLimiter.js'
+import { strictLimiter, apiLimiter } from '../middleware/rateLimiter.js'
 import { pulseAuth } from '../middleware/pulseAuth.js'
 import * as PulseTradeService from '../services/PulseTrade.js'
 
@@ -79,7 +79,7 @@ router.post('/stop', apiKeyMiddleware, strictLimiter, pulseAuth, async (req, res
  * GET /api/pulse/status/:pulseId
  * Get status and stats for a specific pulse
  */
-router.get('/status/:pulseId', apiKeyMiddleware, pulseAuth, async (req, res, next) => {
+router.get('/status/:pulseId', apiKeyMiddleware, apiLimiter, pulseAuth, async (req, res, next) => {
   try {
     const { pulseId } = req.params
 
@@ -98,7 +98,7 @@ router.get('/status/:pulseId', apiKeyMiddleware, pulseAuth, async (req, res, nex
  * GET /api/pulse/metrics
  * Get overall performance metrics
  */
-router.get('/metrics', apiKeyMiddleware, pulseAuth, async (req, res, next) => {
+router.get('/metrics', apiKeyMiddleware, apiLimiter, pulseAuth, async (req, res, next) => {
   try {
     const metrics = await PulseTradeService.getPerformanceMetrics()
 

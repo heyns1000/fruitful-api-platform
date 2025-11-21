@@ -5,6 +5,7 @@
 
 import express from 'express'
 import { apiKeyMiddleware } from '../middleware/auth.js'
+import { apiLimiter } from '../middleware/rateLimiter.js'
 import { pulseAuth } from '../middleware/pulseAuth.js'
 import * as PulseTradeService from '../services/PulseTrade.js'
 
@@ -14,7 +15,7 @@ const router = express.Router()
  * GET /api/gorilla-burn
  * Calculate Gorilla Vol burn rate from pulse history
  */
-router.get('/gorilla-burn', apiKeyMiddleware, pulseAuth, async (req, res, next) => {
+router.get('/gorilla-burn', apiKeyMiddleware, apiLimiter, pulseAuth, async (req, res, next) => {
   try {
     const metrics = await PulseTradeService.getPerformanceMetrics()
     
@@ -49,7 +50,7 @@ router.get('/gorilla-burn', apiKeyMiddleware, pulseAuth, async (req, res, next) 
  * GET /api/gorilla-status
  * Get current Gorilla Vol status with emoji indicators
  */
-router.get('/gorilla-status', apiKeyMiddleware, pulseAuth, async (req, res, next) => {
+router.get('/gorilla-status', apiKeyMiddleware, apiLimiter, pulseAuth, async (req, res, next) => {
   try {
     const metrics = await PulseTradeService.getPerformanceMetrics()
     
