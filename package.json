@@ -1,0 +1,29 @@
+{
+  "name": "fruitful-api-platform",
+  "version": "1.0.0",
+  "description": "Enterprise API developer console for Fruitful Global Planet",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "frontend": "npm run dev --workspace=frontend",
+    "backend": "npm run dev --workspace=backend"
+  },
+  "keywords": [
+    "api",
+    "developer-console",
+    "oauth2",
+    "webhooks",
+    "analytics"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
