@@ -1,0 +1,26 @@
+name = "fruitful-api-backend"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "fruitful-api-backend-production"
+
+[env.staging]
+name = "fruitful-api-backend-staging"
+
+# Database configuration (use D1 for Cloudflare)
+[[d1_databases]]
+binding = "DB"
+database_name = "fruitful_api"
+database_id = "your-d1-database-id"
+
+# Environment variables
+[vars]
+NODE_ENV = "production"
+VAULT_LEVEL = "7"
+FAA_X13_COMPLIANCE_MODE = "strict"
+
+# Secrets (set via wrangler secret put)
+# JWT_SECRET
+# DATABASE_URL
+# VAULT_ENCRYPTION_KEY
