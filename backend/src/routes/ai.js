@@ -7,15 +7,6 @@ import { strictLimiter } from '../middleware/rateLimiter.js'
 
 const router = express.Router()
 
-// Initialize AI clients
-const openai = new OpenAI({
-  apiKey: config.ai.openaiApiKey,
-})
-
-const anthropic = new Anthropic({
-  apiKey: config.ai.anthropicApiKey,
-})
-
 // POST /api/ai/chat - Chat with AI providers
 router.post('/chat', apiKeyMiddleware, strictLimiter, async (req, res, next) => {
   try {
@@ -36,10 +27,18 @@ router.post('/chat', apiKeyMiddleware, strictLimiter, async (req, res, next) => 
         return res.status(500).json({ message: 'OpenAI API key not configured' })
       }
 
+      const openai = new OpenAI({
+        apiKey: config.ai.openaiApiKey,
+      })
+
       const completion = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [{ role: 'user', content: prompt }],
       })
+
+      if (!completion.choices || completion.choices.length === 0) {
+        return res.status(500).json({ message: 'No response from OpenAI' })
+      }
 
       response = {
         provider: 'openai',
@@ -52,11 +51,19 @@ router.post('/chat', apiKeyMiddleware, strictLimiter, async (req, res, next) => 
         return res.status(500).json({ message: 'Anthropic API key not configured' })
       }
 
+      const anthropic = new Anthropic({
+        apiKey: config.ai.anthropicApiKey,
+      })
+
       const message = await anthropic.messages.create({
         model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }],
       })
+
+      if (!message.content || message.content.length === 0) {
+        return res.status(500).json({ message: 'No response from Anthropic' })
+      }
 
       response = {
         provider: 'anthropic',
