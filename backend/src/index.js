@@ -10,6 +10,9 @@ import webhooksRoutes from './routes/webhooks.js'
 import billingRoutes from './routes/billing.js'
 import playgroundRoutes from './routes/playground.js'
 import aiRoutes from './routes/ai.js'
+import keysRoutes from './routes/keys.js'
+import pulseRoutes from './routes/pulse.js'
+import gorillaRoutes from './routes/gorilla.js'
 
 const app = express()
 
@@ -58,6 +61,9 @@ app.use('/api/webhooks', webhooksRoutes)
 app.use('/api/billing', billingRoutes)
 app.use('/api/playground', playgroundRoutes)
 app.use('/api/ai', aiRoutes)
+app.use('/api/keys', keysRoutes)
+app.use('/api/pulse', pulseRoutes)
+app.use('/api/gorilla', gorillaRoutes)
 
 // Error handling
 app.use(notFoundHandler)
