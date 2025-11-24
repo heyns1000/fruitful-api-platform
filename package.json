@@ -27,6 +27,6 @@
     "node": ">=18.0.0"
   },
   "overrides": {
-    "serverless-http": "^2.7.0"
+    "serverless-http": "2.7.0"
   }
 }

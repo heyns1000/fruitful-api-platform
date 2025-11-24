@@ -20,7 +20,7 @@
     "axios": "^1.6.2",
     "openai": "^6.9.1",
     "@anthropic-ai/sdk": "^0.70.1",
-    "serverless-http": "^2.9.0"
+    "serverless-http": "^2.7.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
