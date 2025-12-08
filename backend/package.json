@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/index.js",
-    "build": "echo 'No build step required for backend'",
+    "build": "echo 'Backend requires no build step'",
     "start": "node src/index.js",
     "migrate": "node src/utils/migrate.js"
   },
