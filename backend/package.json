@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/index.js",
-    "build": "echo 'No build step required for backend'",
+    "build": "echo 'Backend requires no build step'",
     "start": "node src/index.js",
     "migrate": "node src/utils/migrate.js"
   },
@@ -21,7 +21,7 @@
     "axios": "^1.6.2",
     "openai": "^6.9.1",
     "@anthropic-ai/sdk": "^0.70.1",
-    "serverless-http": "^2.9.0"
+    "serverless-http": "^2.7.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
