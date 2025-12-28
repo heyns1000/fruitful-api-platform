@@ -1,5 +1,11 @@
 # Fruitful API Platform
 
+[![BushPortal Network](https://img.shields.io/badge/🌳_BushPortal-Network-orange?style=for-the-badge&logo=spotify)](https://github.com/heyns1000/baobab-bush-portal)
+[![VaultPulse](https://img.shields.io/badge/VaultPulse-●●●●●-brightgreen?style=for-the-badge)](https://github.com/heyns1000/baobab-bush-portal)
+[![SamFox Approved](https://img.shields.io/badge/🍦_SamFox-Approved-fbbf24?style=for-the-badge)](https://github.com/heyns1000/baobab-bush-portal)
+
+> *🌐 Fruitful Drive Integration - Connected to Sovereign Signal Network | Deep roots. Wide API. 🌳*
+
 Enterprise API developer console for Fruitful Global Planet - OAuth2, REST APIs, WebSockets, API keys, usage analytics, and billing.
 
 ## 🚀 Features
