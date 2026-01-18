@@ -13,6 +13,8 @@ import aiRoutes from './routes/ai.js'
 import keysRoutes from './routes/keys.js'
 import pulseRoutes from './routes/pulse.js'
 import gorillaRoutes from './routes/gorilla.js'
+import heritageRoutes from './routes/heritage.js'
+import QuantumNexus from './services/quantumNexus.js'
 
 const app = express()
 
@@ -64,6 +66,7 @@ app.use('/api/ai', aiRoutes)
 app.use('/api/keys', keysRoutes)
 app.use('/api/pulse', pulseRoutes)
 app.use('/api/gorilla', gorillaRoutes)
+app.use('/api/heritage', heritageRoutes)
 
 // Error handling
 app.use(notFoundHandler)
@@ -85,6 +88,10 @@ app.listen(PORT, () => {
 ║  HSOMNI9000:      Active                                   ║
 ╚════════════════════════════════════════════════════════════╝
   `)
+  
+  // Start Quantum Nexus
+  const nexus = new QuantumNexus()
+  nexus.start(3002)
 })
 
 export default app
