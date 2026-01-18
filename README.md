@@ -129,6 +129,48 @@ Real-time trading and market data
 - Endpoint: `POST /api/playground/pulse-trade`
 - Authentication: API Key required
 
+#### Heritage Matrix API
+Cultural intelligence layer for 13,320 pathways (111 languages × 120 countries)
+- Endpoints: 
+  - `GET /api/heritage/:country/:language` - Get cultural context
+  - `POST /api/heritage/validate` - Validate content against cultural norms
+  - `POST /api/heritage/route-careloop` - Calculate culturally-optimized Care Loop routing
+
+**Example Usage:**
+
+```javascript
+// Get isiZulu cultural context
+const cultural = await fetch('/api/heritage/ZA/zu', {
+  headers: { 'X-API-Key': 'your-api-key' }
+});
+
+// Route R600 donation through cultural weights
+const routing = await fetch('/api/heritage/route-careloop', {
+  method: 'POST',
+  headers: { 
+    'X-API-Key': 'your-api-key',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    country: 'ZA',
+    language: 'zu',
+    donation_amount: 600
+  })
+});
+// Returns: { education: 210, climate: 120, health: 150, ... }
+```
+
+**Quantum Nexus WebSocket Service:**
+
+24/7 WebSocket service on port 3002 for community steward synchronization.
+
+```javascript
+const ws = new WebSocket('ws://localhost:3002?country=ZA&language=zu');
+ws.onmessage = (event) => {
+  console.log('Cultural update:', JSON.parse(event.data));
+};
+```
+
 ### Authentication
 
 All API requests require either:
