@@ -37,9 +37,21 @@ class QuantumNexus {
       if (result.rows[0]) {
         this.stewards.set(ws, { country, language, pathway_id: result.rows[0].id });
         ws.send(JSON.stringify({ status: 'REGISTERED', pathway_id: result.rows[0].id }));
+      } else {
+        // Heritage pathway not found - send error to client
+        ws.send(JSON.stringify({ 
+          status: 'ERROR', 
+          message: `Cultural pathway ${country}-${language} not found` 
+        }));
+        ws.close();
       }
     } catch (error) {
       console.error('Steward registration error:', error);
+      ws.send(JSON.stringify({ 
+        status: 'ERROR', 
+        message: 'Registration failed' 
+      }));
+      ws.close();
     }
   }
 

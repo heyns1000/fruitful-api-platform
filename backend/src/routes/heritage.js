@@ -45,6 +45,14 @@ router.post('/validate', apiKeyMiddleware, apiLimiter, async (req, res, next) =>
   try {
     const { country, language, content_type, payload } = req.body;
     
+    // Validate required fields
+    if (!country || !language || !content_type || !payload) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['country', 'language', 'content_type', 'payload']
+      });
+    }
+    
     const cultural = await getCulturalContext(country, language);
     
     const validation = {
@@ -74,6 +82,22 @@ router.post('/validate', apiKeyMiddleware, apiLimiter, async (req, res, next) =>
 router.post('/route-careloop', apiKeyMiddleware, apiLimiter, async (req, res, next) => {
   try {
     const { country, language, donation_amount } = req.body;
+    
+    // Validate required fields
+    if (!country || !language || donation_amount === undefined || donation_amount === null) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['country', 'language', 'donation_amount']
+      });
+    }
+    
+    // Validate donation amount is a positive number
+    if (typeof donation_amount !== 'number' || donation_amount <= 0) {
+      return res.status(400).json({
+        error: 'donation_amount must be a positive number',
+        provided: donation_amount
+      });
+    }
     
     const cultural = await getCulturalContext(country, language);
     const weights = cultural.careloop_weights;
@@ -119,10 +143,21 @@ async function getCulturalContext(country, language) {
 }
 
 function validateVisuals(visuals, constraints) {
+  if (!visuals || !constraints) {
+    return { status: 'PASSED', violations: [] };
+  }
+  
   const taboos = constraints.visual_taboos || [];
-  const violations = taboos.filter(taboo => 
-    visuals && visuals.toLowerCase().includes(taboo.toLowerCase())
-  );
+  const violations = [];
+  
+  // Use exact phrase matching to avoid false positives
+  for (const taboo of taboos) {
+    // Check if the taboo phrase exists as a complete match (case insensitive)
+    const pattern = new RegExp(`\\b${taboo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    if (pattern.test(visuals)) {
+      violations.push(taboo);
+    }
+  }
   
   return {
     status: violations.length === 0 ? 'PASSED' : 'FAILED',
@@ -130,19 +165,43 @@ function validateVisuals(visuals, constraints) {
   };
 }
 
+// NOTE: Audio validation is a placeholder implementation
+// In production, this should integrate with audio analysis tools
 function validateAudio(audio, frequencies) {
+  if (!audio || !frequencies) {
+    return { status: 'PASSED', violations: [] };
+  }
+  // TODO: Implement actual audio frequency and scale validation
   return { status: 'PASSED', violations: [] };
 }
 
+// NOTE: Sacred symbols check is a placeholder implementation
+// In production, this should use image recognition or content analysis
 function checkSacredSymbols(payload, sacredSymbols) {
+  if (!payload || !sacredSymbols) {
+    return { status: 'PASSED', found_symbols: [] };
+  }
+  // TODO: Implement actual sacred symbol detection
   return { status: 'PASSED', found_symbols: [] };
 }
 
+// NOTE: Ritual timing check is a placeholder implementation
+// In production, this should check against cultural calendar
 function checkRitualTiming(currentDate, ritualTiming) {
+  if (!ritualTiming) {
+    return { status: 'PASSED' };
+  }
+  // TODO: Implement actual ritual timing validation against cultural calendar
   return { status: 'PASSED' };
 }
 
+// NOTE: Governance needs check is a placeholder implementation
+// In production, this should evaluate scope against protocols
 function checkGovernanceNeeds(scope, protocols) {
+  if (!scope || !protocols) {
+    return { status: 'PASSED' };
+  }
+  // TODO: Implement actual governance protocol validation
   return { status: 'PASSED' };
 }
 
