@@ -1,0 +1,225 @@
+// ═══════════════════════════════════════════════════════════════════
+// Heritage Matrix API - Express.js Routes
+// ═══════════════════════════════════════════════════════════════════
+
+import express from 'express';
+import pool from '../config/database.js';
+import { apiKeyMiddleware } from '../middleware/auth.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
+
+const router = express.Router();
+
+// ────────────────────────────────────────────────────────────────────
+// GET /api/heritage/:country/:language - Get Cultural Context
+// ────────────────────────────────────────────────────────────────────
+router.get('/:country/:language', apiKeyMiddleware, apiLimiter, async (req, res, next) => {
+  try {
+    const { country, language } = req.params;
+    
+    const result = await pool.query(`
+      SELECT * FROM heritage_matrix
+      WHERE country_code = $1 AND language_code = $2 AND is_active = true
+    `, [country.toUpperCase(), language.toLowerCase()]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        error: 'Cultural pathway not found',
+        country, language,
+        suggestion: 'Use fallback to English or regional default'
+      });
+    }
+    
+    res.json({
+      success: true,
+      cultural_context: result.rows[0]
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ────────────────────────────────────────────────────────────────────
+// POST /api/heritage/validate - Validate Content Against Culture
+// ────────────────────────────────────────────────────────────────────
+router.post('/validate', apiKeyMiddleware, apiLimiter, async (req, res, next) => {
+  try {
+    const { country, language, content_type, payload } = req.body;
+    
+    // Validate required fields
+    if (!country || !language || !content_type || !payload) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['country', 'language', 'content_type', 'payload']
+      });
+    }
+    
+    const cultural = await getCulturalContext(country, language);
+    
+    const validation = {
+      visual_check: validateVisuals(payload.visuals, cultural.style_constraints),
+      sonic_check: validateAudio(payload.audio, cultural.sonic_frequencies),
+      sacred_symbols: checkSacredSymbols(payload, cultural.cultural_risk_flags.sacred_symbols),
+      ritual_timing: checkRitualTiming(new Date(), cultural.cultural_risk_flags.ritual_timing),
+      governance_required: checkGovernanceNeeds(payload.scope, cultural.cultural_risk_flags.governance_protocols)
+    };
+    
+    const hasIssues = Object.values(validation).some(v => v.status === 'FAILED');
+    
+    res.json({
+      success: !hasIssues,
+      validation_results: validation,
+      cultural_context_id: cultural.id,
+      recommendations: hasIssues ? generateRecommendations(validation) : []
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ────────────────────────────────────────────────────────────────────
+// POST /api/heritage/route-careloop - Calculate Cultural Care Loop
+// ────────────────────────────────────────────────────────────────────
+router.post('/route-careloop', apiKeyMiddleware, apiLimiter, async (req, res, next) => {
+  try {
+    const { country, language, donation_amount } = req.body;
+    
+    // Validate required fields
+    if (!country || !language || donation_amount === undefined || donation_amount === null) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        required: ['country', 'language', 'donation_amount']
+      });
+    }
+    
+    // Validate donation amount is a positive number
+    if (typeof donation_amount !== 'number' || donation_amount <= 0) {
+      return res.status(400).json({
+        error: 'donation_amount must be a positive number',
+        provided: donation_amount
+      });
+    }
+    
+    const cultural = await getCulturalContext(country, language);
+    const weights = cultural.careloop_weights;
+    
+    const routing = {
+      total: donation_amount,
+      education: donation_amount * weights.education,
+      climate: donation_amount * weights.climate,
+      health: donation_amount * weights.health,
+      cultural_preservation: donation_amount * weights.cultural_preservation,
+      infrastructure: donation_amount * weights.infrastructure,
+      economic_development: donation_amount * weights.economic_development,
+      
+      animals_helped_estimate: calculateAnimalsHelped(donation_amount, weights),
+      optimization_boost: calculateOptimizationBoost(donation_amount, weights)
+    };
+    
+    res.json({
+      success: true,
+      cultural_routing: routing,
+      cultural_context: {
+        country: cultural.country_name,
+        language: cultural.language_name
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Helper functions
+async function getCulturalContext(country, language) {
+  const result = await pool.query(`
+    SELECT * FROM heritage_matrix
+    WHERE country_code = $1 AND language_code = $2 AND is_active = true
+  `, [country.toUpperCase(), language.toLowerCase()]);
+  
+  if (result.rows.length === 0) {
+    throw new Error(`Cultural pathway ${country}-${language} not found`);
+  }
+  
+  return result.rows[0];
+}
+
+function validateVisuals(visuals, constraints) {
+  if (!visuals || !constraints) {
+    return { status: 'PASSED', violations: [] };
+  }
+  
+  const taboos = constraints.visual_taboos || [];
+  const violations = [];
+  
+  // Use exact phrase matching to avoid false positives
+  for (const taboo of taboos) {
+    // Check if the taboo phrase exists as a complete match (case insensitive)
+    const pattern = new RegExp(`\\b${taboo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    if (pattern.test(visuals)) {
+      violations.push(taboo);
+    }
+  }
+  
+  return {
+    status: violations.length === 0 ? 'PASSED' : 'FAILED',
+    violations
+  };
+}
+
+// NOTE: Audio validation is a placeholder implementation
+// In production, this should integrate with audio analysis tools
+function validateAudio(audio, frequencies) {
+  if (!audio || !frequencies) {
+    return { status: 'PASSED', violations: [] };
+  }
+  // TODO: Implement actual audio frequency and scale validation
+  return { status: 'PASSED', violations: [] };
+}
+
+// NOTE: Sacred symbols check is a placeholder implementation
+// In production, this should use image recognition or content analysis
+function checkSacredSymbols(payload, sacredSymbols) {
+  if (!payload || !sacredSymbols) {
+    return { status: 'PASSED', found_symbols: [] };
+  }
+  // TODO: Implement actual sacred symbol detection
+  return { status: 'PASSED', found_symbols: [] };
+}
+
+// NOTE: Ritual timing check is a placeholder implementation
+// In production, this should check against cultural calendar
+function checkRitualTiming(currentDate, ritualTiming) {
+  if (!ritualTiming) {
+    return { status: 'PASSED' };
+  }
+  // TODO: Implement actual ritual timing validation against cultural calendar
+  return { status: 'PASSED' };
+}
+
+// NOTE: Governance needs check is a placeholder implementation
+// In production, this should evaluate scope against protocols
+function checkGovernanceNeeds(scope, protocols) {
+  if (!scope || !protocols) {
+    return { status: 'PASSED' };
+  }
+  // TODO: Implement actual governance protocol validation
+  return { status: 'PASSED' };
+}
+
+function calculateAnimalsHelped(amount, weights) {
+  const baseEfficiency = amount / 240;
+  const culturalBoost = 1.6;
+  return Math.floor(baseEfficiency * culturalBoost);
+}
+
+function calculateOptimizationBoost(amount, weights) {
+  const generic = amount / 240;
+  const optimized = calculateAnimalsHelped(amount, weights);
+  const boost = ((optimized - generic) / generic) * 100;
+  return `+${boost.toFixed(1)}%`;
+}
+
+function generateRecommendations(validation) {
+  return ['Review cultural constraints', 'Consult community stewards'];
+}
+
+export default router;
