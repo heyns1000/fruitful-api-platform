@@ -9,7 +9,7 @@
     "migrate": "node src/utils/migrate.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.22.1",
     "cors": "^2.8.5",
     "helmet": "^7.1.0",
     "express-rate-limit": "^7.1.5",
@@ -18,7 +18,7 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.3.1",
     "uuid": "^9.0.1",
-    "axios": "^1.6.2",
+    "axios": "^1.16.0",
     "openai": "^6.9.1",
     "@anthropic-ai/sdk": "^0.70.1",
     "serverless-http": "^2.7.0",
