@@ -33,4 +33,11 @@ export default {
     openaiApiKey: process.env.OPENAI_API_KEY,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
   },
+
+  perplexity: {
+    apiKey: process.env.PERPLEXITY_API_KEY,
+    baseUrl: 'https://api.perplexity.ai',
+    defaultModel: process.env.PERPLEXITY_MODEL || 'llama-3.1-sonar-large-128k-online',
+    quotaPerWorkspace: parseInt(process.env.PERPLEXITY_QUOTA_PER_WORKSPACE) || 500,
+  },
 }

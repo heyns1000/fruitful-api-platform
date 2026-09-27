@@ -14,6 +14,7 @@ import keysRoutes from './routes/keys.js'
 import pulseRoutes from './routes/pulse.js'
 import gorillaRoutes from './routes/gorilla.js'
 import heritageRoutes from './routes/heritage.js'
+import perplexityRoutes from './routes/perplexity.js'
 import QuantumNexus from './services/quantumNexus.js'
 
 const app = express()
@@ -67,6 +68,7 @@ app.use('/api/keys', keysRoutes)
 app.use('/api/pulse', pulseRoutes)
 app.use('/api/gorilla', gorillaRoutes)
 app.use('/api/heritage', heritageRoutes)
+app.use('/api/perplexity', perplexityRoutes)
 
 // Error handling
 app.use(notFoundHandler)
